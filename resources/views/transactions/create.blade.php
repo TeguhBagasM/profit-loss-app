@@ -37,15 +37,13 @@
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
                 <x-input-label for="debit" value="Debit (pengeluaran)" />
-                <input id="debit" name="debit" type="number" step="0.01" min="0"
-                       value="{{ old('debit', '0') }}" class="input-field">
+                <x-money-input name="debit" id="debit" :value="old('debit')" class="mt-1 block w-full" />
                 <x-input-error :messages="$errors->get('debit')" class="mt-2" />
             </div>
 
             <div>
                 <x-input-label for="credit" value="Credit (pemasukan)" />
-                <input id="credit" name="credit" type="number" step="0.01" min="0"
-                       value="{{ old('credit', '0') }}" class="input-field">
+                <x-money-input name="credit" id="credit" :value="old('credit')" class="mt-1 block w-full" />
                 <x-input-error :messages="$errors->get('credit')" class="mt-2" />
             </div>
         </div>
@@ -55,7 +53,10 @@
         </p>
 
         <div class="flex items-center gap-4 pt-1">
-            <x-primary-button>Simpan transaksi</x-primary-button>
+            <x-primary-button>
+                <i class="fa-solid fa-floppy-disk w-3.5 text-center" aria-hidden="true"></i>
+                Simpan transaksi
+            </x-primary-button>
             <a href="{{ route('transactions.index') }}" class="text-sm text-muted underline">Batal</a>
         </div>
     </form>

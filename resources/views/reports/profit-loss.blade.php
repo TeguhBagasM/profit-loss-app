@@ -9,7 +9,8 @@
             </div>
 
             <a href="{{ route('reports.profit-loss.export', ['from' => $from, 'to' => $to]) }}"
-               class="inline-flex items-center rounded-md border border-line bg-surface px-4 py-2 text-sm font-medium text-ink hover:bg-paper focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
+               class="inline-flex items-center gap-2 rounded-md border border-line bg-surface px-4 py-2 text-sm font-medium text-ink hover:bg-paper focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
+                <i class="fa-solid fa-file-excel w-3.5 text-center" aria-hidden="true"></i>
                 Export Excel
             </a>
         </div>

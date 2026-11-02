@@ -7,7 +7,8 @@
             </div>
 
             <a href="{{ route('chart-of-accounts.create') }}"
-               class="inline-flex items-center rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
+               class="inline-flex items-center gap-2 rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
+                <i class="fa-solid fa-plus w-3.5 text-center" aria-hidden="true"></i>
                 Tambah COA
             </a>
         </div>
@@ -81,6 +82,7 @@
                 <tr>
                     <td colspan="4">
                         <x-empty-state
+                            icon="fa-solid fa-list"
                             title="Tidak ada COA yang cocok"
                             description="Ubah kata kunci pencarian, atau tambahkan COA baru untuk kategori ini."
                             action-label="Tambah COA"

@@ -28,7 +28,10 @@
         </div>
 
         <div class="flex items-center gap-4 pt-1">
-            <x-primary-button>Simpan perubahan</x-primary-button>
+            <x-primary-button>
+                <i class="fa-solid fa-floppy-disk w-3.5 text-center" aria-hidden="true"></i>
+                Simpan perubahan
+            </x-primary-button>
             <a href="{{ route('categories.index') }}" class="text-sm text-muted underline">Batal</a>
         </div>
     </form>

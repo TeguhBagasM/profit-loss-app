@@ -12,11 +12,11 @@
     <body class="min-h-screen bg-paper font-sans text-ink antialiased">
         @php
             $navigation = [
-                ['label' => 'Dashboard', 'href' => route('dashboard'), 'active' => request()->routeIs('dashboard')],
-                ['label' => 'Transaksi', 'href' => route('transactions.index'), 'active' => request()->routeIs('transactions.*')],
-                ['label' => 'COA', 'href' => route('chart-of-accounts.index'), 'active' => request()->routeIs('chart-of-accounts.*')],
-                ['label' => 'Kategori', 'href' => route('categories.index'), 'active' => request()->routeIs('categories.*')],
-                ['label' => 'Laporan', 'href' => route('reports.profit-loss'), 'active' => request()->routeIs('reports.*')],
+                ['label' => 'Dashboard', 'icon' => 'fa-solid fa-gauge-high', 'href' => route('dashboard'), 'active' => request()->routeIs('dashboard')],
+                ['label' => 'Transaksi', 'icon' => 'fa-solid fa-receipt', 'href' => route('transactions.index'), 'active' => request()->routeIs('transactions.*')],
+                ['label' => 'COA', 'icon' => 'fa-solid fa-list', 'href' => route('chart-of-accounts.index'), 'active' => request()->routeIs('chart-of-accounts.*')],
+                ['label' => 'Kategori', 'icon' => 'fa-solid fa-tags', 'href' => route('categories.index'), 'active' => request()->routeIs('categories.*')],
+                ['label' => 'Laporan', 'icon' => 'fa-solid fa-chart-line', 'href' => route('reports.profit-loss'), 'active' => request()->routeIs('reports.*')],
             ];
         @endphp
 
@@ -37,6 +37,7 @@
                                'text-muted hover:text-ink' => ! $item['active'],
                            ])
                            @if ($item['active']) aria-current="page" @endif>
+                            <i class="{{ $item['icon'] }} w-4 text-center" aria-hidden="true"></i>
                             {{ $item['label'] }}
                         </a>
                     @endforeach
@@ -64,10 +65,7 @@
                         <button type="button" x-on:click="open = ! open" :aria-expanded="open.toString()"
                                 aria-controls="navigasi-mobile" aria-label="Buka menu"
                                 class="rounded-md border border-line p-2 text-muted hover:text-ink">
-                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                 stroke-width="1.5" aria-hidden="true">
-                                <path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16" />
-                            </svg>
+                            <i class="fa-solid fa-bars" aria-hidden="true"></i>
                         </button>
                     </div>
 
@@ -82,6 +80,7 @@
                                        'text-muted hover:text-ink' => ! $item['active'],
                                    ])
                                    @if ($item['active']) aria-current="page" @endif>
+                                    <i class="{{ $item['icon'] }} w-4 text-center" aria-hidden="true"></i>
                                     {{ $item['label'] }}
                                 </a>
                             @endforeach

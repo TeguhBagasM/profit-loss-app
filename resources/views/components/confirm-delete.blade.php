@@ -12,7 +12,8 @@
 @endphp
 
 <button type="button" x-data x-on:click="$dispatch('open-modal', '{{ $modalName }}')"
-        class="text-sm text-loss underline hover:text-loss/80">
+        class="inline-flex items-center gap-1.5 text-sm text-loss underline hover:text-loss/80">
+    <i class="fa-solid fa-trash w-3.5 text-center" aria-hidden="true"></i>
     {{ $label }}
 </button>
 
@@ -28,7 +29,8 @@
             <x-secondary-button x-on:click="$dispatch('close')">Batal</x-secondary-button>
 
             <button type="submit"
-                    class="inline-flex items-center rounded-md bg-loss px-4 py-2 text-sm font-medium text-white hover:bg-loss/90 focus-visible:ring-2 focus-visible:ring-loss focus-visible:ring-offset-2">
+                    class="inline-flex items-center gap-2 rounded-md bg-loss px-4 py-2 text-sm font-medium text-white hover:bg-loss/90 focus-visible:ring-2 focus-visible:ring-loss focus-visible:ring-offset-2">
+                <i class="fa-solid fa-trash w-3.5 text-center" aria-hidden="true"></i>
                 {{ $confirmLabel }}
             </button>
         </div>

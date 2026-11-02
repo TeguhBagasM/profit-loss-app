@@ -44,6 +44,21 @@ final class ProfitLossReport
     }
 
     /**
+     * Data grafik dashboard. Nilai uang tetap string; konversi ke angka hanya di JS.
+     *
+     * @return array{labels: list<string>, income: list<string>, expense: list<string>, net: list<string>}
+     */
+    public function toChartData(): array
+    {
+        return [
+            'labels' => $this->periods,
+            'income' => array_map(fn (string $period): string => $this->incomeTotalFor($period), $this->periods),
+            'expense' => array_map(fn (string $period): string => $this->expenseTotalFor($period), $this->periods),
+            'net' => array_map(fn (string $period): string => $this->netFor($period), $this->periods),
+        ];
+    }
+
+    /**
      * @param  list<array{id: int, name: string, values: array<string, string>}>  $rows
      */
     private function sumForPeriod(array $rows, string $period): string

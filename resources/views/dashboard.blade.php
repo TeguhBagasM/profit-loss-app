@@ -21,8 +21,9 @@
 
     @if ($report === null)
         <x-empty-state
+            icon="fa-solid fa-chart-line"
             title="Belum ada transaksi"
-            description="Catat transaksi pertama Anda; ringkasan bulan terakhir akan muncul di sini."
+            description="Catat transaksi pertama Anda; ringkasan dan grafik bulan terakhir akan muncul di sini."
             action-label="Tambah transaksi"
             :action-href="route('transactions.create')"
         />
@@ -43,6 +44,24 @@
                 <dd class="mt-1 text-xl font-bold"><x-money :value="$report->net" /></dd>
             </div>
         </dl>
+
+        <section class="mt-8">
+            <div class="flex flex-wrap items-baseline justify-between gap-3">
+                <h2 class="text-base font-medium">Income vs expense per bulan</h2>
+
+                <a href="{{ route('reports.profit-loss', ['from' => $chartRange['from'], 'to' => $chartRange['to']]) }}"
+                   class="text-sm text-accent underline">
+                    Lihat laporan lengkap
+                </a>
+            </div>
+
+            <div data-chart="{{ json_encode($chart) }}" class="mt-4 h-56 border-t border-line pt-4 sm:h-72">
+                <canvas id="dashboard-chart" role="img"
+                        aria-label="Income dan expense per bulan, {{ $chart['labels'][0] }} sampai {{ $chart['labels'][count($chart['labels']) - 1] }}"></canvas>
+            </div>
+
+            @vite('resources/js/dashboard-chart.js')
+        </section>
 
         <h2 class="mt-8 text-base font-medium">5 transaksi terakhir</h2>
 
