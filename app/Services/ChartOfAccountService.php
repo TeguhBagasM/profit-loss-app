@@ -49,6 +49,14 @@ class ChartOfAccountService
     }
 
     /**
+     * @return Collection<int, ChartOfAccount>
+     */
+    public function chartOfAccountOptions(): Collection
+    {
+        return ChartOfAccount::query()->orderBy('code')->get(['id', 'code', 'name']);
+    }
+
+    /**
      * @param  array{code: string, name: string, category_id: int|string}  $data
      */
     public function create(array $data): ChartOfAccount
