@@ -23,6 +23,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/reports/profit-loss', [ProfitLossReportController::class, 'index'])
         ->name('reports.profit-loss');
 
+    Route::get('/reports/profit-loss/export', [ProfitLossReportController::class, 'export'])
+        ->middleware('throttle:10,1')
+        ->name('reports.profit-loss.export');
+
     Route::resource('categories', CategoryController::class)->except('show');
 
     Route::resource('chart-of-accounts', ChartOfAccountController::class)

@@ -23,6 +23,11 @@
                 <button type="submit" class="px-4 py-2 bg-gray-800 text-white text-sm rounded">
                     Tampilkan
                 </button>
+
+                <a href="{{ route('reports.profit-loss.export', ['from' => $from, 'to' => $to]) }}"
+                   class="px-4 py-2 border border-gray-300 text-sm rounded">
+                    Export Excel
+                </a>
             </form>
 
             @error('from')
