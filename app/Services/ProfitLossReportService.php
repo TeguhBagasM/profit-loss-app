@@ -93,7 +93,7 @@ class ProfitLossReportService
         $toMonth = $this->parseMonth($to);
 
         if ($fromMonth === null && $toMonth === null) {
-            $year = $this->latestTransactionYear() ?? (int) now()->year;
+            $year = $this->latestMonth()?->year ?? (int) now()->year;
 
             return [
                 'from' => $this->monthStart($year, 1),
@@ -112,6 +112,20 @@ class ProfitLossReportService
         return ['from' => $fromMonth, 'to' => $toMonth];
     }
 
+    /**
+     * Bulan transaksi terbaru, atau null bila belum ada transaksi.
+     */
+    public function latestMonth(): ?CarbonImmutable
+    {
+        $latest = Transaction::query()->max('date');
+
+        if ($latest === null) {
+            return null;
+        }
+
+        return CarbonImmutable::parse((string) $latest)->startOfMonth();
+    }
+
     private function parseMonth(?string $value): ?CarbonImmutable
     {
         if ($value === null || $value === '') {
@@ -124,17 +138,6 @@ class ProfitLossReportService
     private function monthStart(int $year, int $month): CarbonImmutable
     {
         return CarbonImmutable::createFromFormat('!Y-m-d', sprintf('%04d-%02d-01', $year, $month));
-    }
-
-    private function latestTransactionYear(): ?int
-    {
-        $latest = Transaction::query()->max('date');
-
-        if ($latest === null) {
-            return null;
-        }
-
-        return (int) CarbonImmutable::parse((string) $latest)->year;
     }
 
     /**
@@ -157,54 +160,46 @@ class ProfitLossReportService
     }
 
     /**
-     * Agregasi per kategori per bulan dengan binding; tanpa whereYear agar index tanggal terpakai.
+     * Agregasi per kategori per bulan.
+     *
+     * Baris pada rentang tanggal diambil lewat Query Builder dengan binding (filter
+     * memakai index `date`), lalu dijumlahkan di PHP memakai BCMath. Tidak ada
+     * DB::raw/selectRaw di sini, sesuai aturan bagian 8 spec.
      *
      * @return array<int, array<string, array{debit: string, credit: string}>>
      */
     private function aggregate(CarbonImmutable $from, CarbonImmutable $to): array
     {
-        $periodExpression = $this->periodExpression();
+        $sums = [];
 
         $rows = DB::table('transactions')
             ->join('chart_of_accounts', 'chart_of_accounts.id', '=', 'transactions.chart_of_account_id')
-            ->join('categories', 'categories.id', '=', 'chart_of_accounts.category_id')
-            // Batas bawah berupa tanggal; batas atas akhir hari agar transaksi pada
+            // Batas bawah tanggal; batas atas akhir hari agar transaksi pada
             // hari terakhir bulan (tersimpan sebagai 'Y-m-d 00:00:00') tidak terlewat.
             ->where('transactions.date', '>=', $from->startOfMonth()->toDateString())
             ->where('transactions.date', '<=', $to->endOfMonth()->toDateTimeString())
-            ->groupBy('categories.id')
-            ->groupBy(DB::raw($periodExpression))
             ->select([
-                'categories.id as category_id',
-                DB::raw($periodExpression.' as period'),
-                DB::raw('SUM(transactions.debit) as total_debit'),
-                DB::raw('SUM(transactions.credit) as total_credit'),
+                'transactions.date as date',
+                'chart_of_accounts.category_id as category_id',
+                'transactions.debit as debit',
+                'transactions.credit as credit',
             ])
-            ->get();
-
-        $sums = [];
+            ->cursor();
 
         foreach ($rows as $row) {
-            $sums[(int) $row->category_id][(string) $row->period] = [
-                'debit' => $this->decimal($row->total_debit),
-                'credit' => $this->decimal($row->total_credit),
+            $period = substr((string) $row->date, 0, 7);
+            $categoryId = (int) $row->category_id;
+
+            $debit = $sums[$categoryId][$period]['debit'] ?? '0.00';
+            $credit = $sums[$categoryId][$period]['credit'] ?? '0.00';
+
+            $sums[$categoryId][$period] = [
+                'debit' => Money::add($debit, $this->decimal($row->debit)),
+                'credit' => Money::add($credit, $this->decimal($row->credit)),
             ];
         }
 
         return $sums;
-    }
-
-    /**
-     * Ekspresi periode konstan per driver; tidak pernah menyertakan input user.
-     */
-    private function periodExpression(): string
-    {
-        return match (DB::getDriverName()) {
-            'mysql', 'mariadb' => "DATE_FORMAT(transactions.date, '%Y-%m')",
-            'pgsql' => "to_char(transactions.date, 'YYYY-MM')",
-            'sqlite' => "strftime('%Y-%m', transactions.date)",
-            default => throw new RuntimeException('Driver database tidak didukung untuk laporan.'),
-        };
     }
 
     /**
@@ -224,12 +219,12 @@ class ProfitLossReportService
     }
 
     /**
-     * Normalisasi nilai agregat dari DB menjadi string desimal skala 2.
+     * Normalisasi nilai kolom decimal dari driver menjadi string skala 2.
      *
-     * MySQL/PostgreSQL mengembalikan SUM(decimal) sebagai string. SQLite
-     * mengembalikan angka native (int, atau float bila ada pecahan); untuk
-     * kasus itu konversi dilakukan SEKALI di batas driver ke string 2 desimal,
-     * dan seluruh aritmetika setelahnya memakai BCMath.
+     * MySQL/PostgreSQL mengembalikan decimal sebagai string. SQLite mengembalikan
+     * angka native (int, atau float bila ada pecahan); untuk kasus itu konversi
+     * dilakukan SEKALI di batas driver ke string 2 desimal, dan seluruh aritmetika
+     * setelahnya memakai BCMath.
      */
     private function decimal(mixed $value): string
     {

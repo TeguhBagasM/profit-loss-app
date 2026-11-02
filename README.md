@@ -1,59 +1,136 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Aplikasi Laporan Profit/Loss
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi keuangan sederhana: kelola kategori, chart of account (COA), dan transaksi,
+lalu baca laporan profit/loss per bulan dan ekspor ke Excel.
 
-## About Laravel
+## Stack
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Laravel 12 (PHP 8.2+), Blade + Alpine.js, Tailwind CSS (versi bawaan Breeze, tanpa upgrade)
+- `maatwebsite/excel` 3.1 — versi 4.x menuntut PHP 8.3, sedangkan proyek ini di PHP 8.2
+- Seluruh aritmetika uang memakai BCMath lewat `App\Support\Money` (tanpa float)
+- Font Hanken Grotesk di-host lokal lewat `@fontsource-variable/hanken-grotesk` (tanpa CDN)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Instalasi
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Prasyarat: PHP 8.2+, Composer 2, Node 20+, ekstensi `bcmath` dan `pdo_sqlite`/`pdo_mysql`.
 
-## Learning Laravel
+```bash
+composer install
+cp .env.example .env
+php artisan key:generate
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+# Default DB_CONNECTION=sqlite
+touch database/database.sqlite
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+# Isi ADMIN_EMAIL dan ADMIN_PASSWORD di .env (lihat bagian Konfigurasi .env)
 
-## Laravel Sponsors
+php artisan migrate --seed
+npm install
+npm run build
+php artisan serve
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Buka `http://127.0.0.1:8000`, masuk dengan kredensial seeder.
 
-### Premium Partners
+## Konfigurasi `.env`
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+| Variabel | Keterangan |
+|---|---|
+| `ADMIN_EMAIL` | Email user admin yang dibuat `UserSeeder`. Wajib diisi. |
+| `ADMIN_PASSWORD` | Password user admin. Wajib diisi di luar environment lokal; fallback `password` hanya dipakai bila `app()->isLocal()`. |
+| `APP_DEBUG` | Produksi: `false` agar stack trace tidak bocor. |
+| `SESSION_SECURE_COOKIE` | Produksi: `true` (wajib HTTPS). `http_only` dan `same_site=lax` aktif secara default. |
 
-## Contributing
+Contoh blok untuk `.env`:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```dotenv
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=password
+```
 
-## Code of Conduct
+## Kredensial seeder
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- Email: nilai `ADMIN_EMAIL` (contoh `admin@example.com`)
+- Password: nilai `ADMIN_PASSWORD` (fallback lokal `password`)
 
-## Security Vulnerabilities
+Registrasi publik dimatikan: `GET`/`POST /register` mengembalikan 404. Tambah user baru
+lewat `UserSeeder` atau `php artisan tinker`.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Menjalankan test
 
-## License
+```bash
+php artisan test
+# atau
+vendor/bin/phpunit
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Test memakai SQLite in-memory (lihat `phpunit.xml`), jadi tidak menyentuh database lokal.
+Pemeriksaan gaya kode: `vendor/bin/pint --test`.
+
+## Data seed
+
+`php artisan migrate:fresh --seed` menjalankan `UserSeeder`, `CategorySeeder`,
+`ChartOfAccountSeeder`, dan `TransactionSeeder`:
+
+- 5 kategori: Salary, Other Income (income); Family Expense, Transport Expense, Meal Expense (expense)
+- 8 COA: 401 Gaji Karyawan, 402 Gaji Ketua MPR, 403 Profit Trading, 601 Biaya Sekolah,
+  602 Bensin, 603 Parkir, 604 Makan Siang, 605 Makana Pokok Bulanan
+- 3 transaksi: 2022-01-01 (credit 5.000.000), 2022-01-02 (credit 7.000.000),
+  2022-01-10 (debit 25.000)
+
+### Demo laporan (opsional)
+
+`DemoReportSeeder` **tidak** termasuk `DatabaseSeeder`. Jalankan manual:
+
+```bash
+php artisan db:seed --class=DemoReportSeeder
+```
+
+Seeder ini mengganti transaksi Januari–Maret 2022 dengan data demo yang menghasilkan
+Net Income persis seperti contoh laporan: Januari 16.650.000, Februari 13.950.000,
+Maret 10.600.000. Aman dijalankan berulang (idempoten).
+
+## Asumsi
+
+- Semua user yang login berbagi data yang sama (tabel tidak punya `user_id`).
+- Tanggal sumber pada soal berformat `M/D/YYYY` (`1/10/2022` = 10 Januari 2022); seeder
+  memakai ISO `Y-m-d`.
+- Angka contoh di soal tidak cocok dengan 3 transaksi sumber; `TransactionSeeder` memakai
+  data persis dari soal, sedangkan `DemoReportSeeder` yang mereproduksi angka contoh.
+- Registrasi publik dimatikan; user dibuat lewat seeder.
+- Default rentang laporan: Januari–Desember tahun transaksi terbaru (tahun berjalan bila
+  belum ada transaksi). Bila hanya salah satu filter diisi: `to` kosong → Desember tahun
+  `from`; `from` kosong → Januari tahun `to`.
+
+## Driver database
+
+- Diuji: SQLite (file untuk dev, in-memory untuk test).
+- MySQL/PostgreSQL belum dijalankan pada mesin ini. Kode tidak memakai SQL spesifik driver:
+  tidak ada `DB::raw`/`selectRaw`, dan ekspresi periode dihitung di PHP.
+
+## Hasil audit (2 November 2026)
+
+- `composer audit` → **No security vulnerability advisories found**
+- `npm audit` → **0 vulnerabilities**
+
+## Keamanan
+
+- Semua route aplikasi memakai middleware `auth`; hanya halaman login, forgot/reset password,
+  dan landing page publik yang terbuka. CSV/Excel injection ditangani `App\Support\ExcelSanitizer`.
+- Middleware `SecurityHeaders` mengirim `X-Content-Type-Options: nosniff`,
+  `Referrer-Policy: strict-origin-when-cross-origin`, dan `X-Frame-Options: DENY`.
+- Perubahan data hanya lewat POST/PUT/PATCH/DELETE dengan `@csrf`; tidak ada aksi ubah data via GET.
+- Export dibatasi `throttle:10,1`; login memakai throttle bawaan Breeze.
+- Input query divalidasi FormRequest; pencarian `LIKE` meng-escape `%` dan `_`.
+
+## Catatan teknis
+
+- Satu-satunya raw SQL di aplikasi: `whereRaw("code LIKE ? ESCAPE '!' ...")` pada
+  `ChartOfAccountService` dan `whereRaw("description LIKE ? ESCAPE '!'")` pada
+  `TransactionService`. SQL-nya konstan dan seluruh nilai masuk lewat binding; klausa
+  `ESCAPE` diperlukan agar `%`/`_` bisa di-escape pada semua driver (SQLite tidak punya
+  karakter escape default).
+- Agregasi laporan mengambil baris pada rentang tanggal (memakai index `date`) lalu
+  menjumlahkannya di PHP dengan BCMath, sehingga tidak ada `DB::raw`/`selectRaw`.
+- `categories.name` di migrasi masih `varchar(50)` sementara validasi mengikuti spec
+  (`max:100`). Perlebar kolom bila memakai MySQL/PostgreSQL.
