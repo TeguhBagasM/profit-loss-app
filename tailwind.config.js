@@ -11,8 +11,17 @@ export default {
 
     theme: {
         extend: {
+            colors: {
+                paper: '#F6F7F9',
+                surface: '#FFFFFF',
+                ink: '#1A2330',
+                muted: '#5B6675',
+                line: '#E2E6EC',
+                accent: '#0F766E',
+                loss: '#B3354F',
+            },
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['"Hanken Grotesk Variable"', ...defaultTheme.fontFamily.sans],
             },
         },
     },

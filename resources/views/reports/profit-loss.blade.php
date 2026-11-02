@@ -2,118 +2,129 @@
 
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Laporan Profit/Loss
-        </h2>
-    </x-slot>
-
-    <div class="py-8">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <form method="GET" action="{{ route('reports.profit-loss') }}" class="mb-4 flex flex-wrap items-end gap-3">
-                <div>
-                    <label for="from" class="block text-sm text-gray-700">Dari bulan</label>
-                    <input id="from" name="from" type="month" value="{{ $from }}"
-                           class="mt-1 rounded border-gray-300 text-sm">
-                </div>
-                <div>
-                    <label for="to" class="block text-sm text-gray-700">Sampai bulan</label>
-                    <input id="to" name="to" type="month" value="{{ $to }}"
-                           class="mt-1 rounded border-gray-300 text-sm">
-                </div>
-                <button type="submit" class="px-4 py-2 bg-gray-800 text-white text-sm rounded">
-                    Tampilkan
-                </button>
-
-                <a href="{{ route('reports.profit-loss.export', ['from' => $from, 'to' => $to]) }}"
-                   class="px-4 py-2 border border-gray-300 text-sm rounded">
-                    Export Excel
-                </a>
-            </form>
-
-            @error('from')
-                <p class="mb-2 text-sm text-red-600">{{ $message }}</p>
-            @enderror
-            @error('to')
-                <p class="mb-2 text-sm text-red-600">{{ $message }}</p>
-            @enderror
-
-            <div class="overflow-x-auto bg-white shadow-sm sm:rounded-lg">
-                <table class="min-w-full text-sm">
-                    <thead>
-                        <tr class="border-b border-gray-200 text-left">
-                            <th class="px-4 py-2 font-medium">Kategori</th>
-                            @foreach ($report->periods as $period)
-                                <th class="px-4 py-2 font-medium text-right whitespace-nowrap">{{ $period }}</th>
-                            @endforeach
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($report->incomeRows as $row)
-                            <tr class="border-b border-gray-100">
-                                <td class="px-4 py-2">{{ $row['name'] }}</td>
-                                @foreach ($report->periods as $period)
-                                    <td class="px-4 py-2 text-right tabular-nums">
-                                        {{ Money::format($row['values'][$period]) }}
-                                    </td>
-                                @endforeach
-                            </tr>
-                        @endforeach
-
-                        <tr class="border-y border-gray-300 font-semibold">
-                            <td class="px-4 py-2">Total Income</td>
-                            @foreach ($report->periods as $period)
-                                <td class="px-4 py-2 text-right tabular-nums">
-                                    {{ Money::format($report->incomeTotalFor($period)) }}
-                                </td>
-                            @endforeach
-                        </tr>
-
-                        @foreach ($report->expenseRows as $row)
-                            <tr class="border-b border-gray-100">
-                                <td class="px-4 py-2">{{ $row['name'] }}</td>
-                                @foreach ($report->periods as $period)
-                                    <td class="px-4 py-2 text-right tabular-nums">
-                                        {{ Money::format($row['values'][$period]) }}
-                                    </td>
-                                @endforeach
-                            </tr>
-                        @endforeach
-
-                        <tr class="border-y border-gray-300 font-semibold">
-                            <td class="px-4 py-2">Total Expense</td>
-                            @foreach ($report->periods as $period)
-                                <td class="px-4 py-2 text-right tabular-nums">
-                                    {{ Money::format($report->expenseTotalFor($period)) }}
-                                </td>
-                            @endforeach
-                        </tr>
-
-                        <tr class="font-bold">
-                            <td class="px-4 py-2">Net Income</td>
-                            @foreach ($report->periods as $period)
-                                <td class="px-4 py-2 text-right tabular-nums">
-                                    {{ Money::format($report->netFor($period)) }}
-                                </td>
-                            @endforeach
-                        </tr>
-                    </tbody>
-                </table>
+        <div class="flex flex-wrap items-end justify-between gap-3">
+            <div>
+                <h1 class="text-xl font-semibold tracking-tight">Laporan profit/loss</h1>
+                <p class="mt-1 text-sm text-muted">Periode {{ $from }} sampai {{ $to }}</p>
             </div>
 
-            <dl class="mt-4 grid grid-cols-1 gap-2 text-sm sm:grid-cols-3">
-                <div>
-                    <dt class="text-gray-500">Total Income</dt>
-                    <dd class="tabular-nums">{{ Money::format($report->totalIncome) }}</dd>
-                </div>
-                <div>
-                    <dt class="text-gray-500">Total Expense</dt>
-                    <dd class="tabular-nums">{{ Money::format($report->totalExpense) }}</dd>
-                </div>
-                <div>
-                    <dt class="text-gray-500">Net Income</dt>
-                    <dd class="tabular-nums font-semibold">{{ Money::format($report->net) }}</dd>
-                </div>
-            </dl>
+            <a href="{{ route('reports.profit-loss.export', ['from' => $from, 'to' => $to]) }}"
+               class="inline-flex items-center rounded-md border border-line bg-surface px-4 py-2 text-sm font-medium text-ink hover:bg-paper focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
+                Export Excel
+            </a>
         </div>
+    </x-slot>
+
+    <form method="GET" action="{{ route('reports.profit-loss') }}"
+          class="flex flex-wrap items-end gap-3 border-b border-line pb-4">
+        <div>
+            <label for="from" class="block text-sm font-medium text-muted">Dari bulan</label>
+            <input id="from" name="from" type="month" value="{{ $from }}" class="input-field w-auto">
+        </div>
+
+        <div>
+            <label for="to" class="block text-sm font-medium text-muted">Sampai bulan</label>
+            <input id="to" name="to" type="month" value="{{ $to }}" class="input-field w-auto">
+        </div>
+
+        <button type="submit"
+                class="rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
+            Tampilkan
+        </button>
+    </form>
+
+    @error('from')
+        <p class="mt-3 text-sm text-loss">{{ $message }}</p>
+    @enderror
+    @error('to')
+        <p class="mt-3 text-sm text-loss">{{ $message }}</p>
+    @enderror
+
+    <div class="mt-6 overflow-x-auto">
+        <table class="min-w-full border-collapse text-sm">
+            <thead>
+                <tr>
+                    <th class="sticky left-0 z-10 border-b border-line bg-paper px-3 py-2 text-left text-sm font-medium text-muted">
+                        Kategori
+                    </th>
+                    @foreach ($report->periods as $period)
+                        <th class="border-b border-line px-3 py-2 text-right text-sm font-medium whitespace-nowrap text-muted">
+                            {{ $period }}
+                        </th>
+                    @endforeach
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($report->incomeRows as $row)
+                    <tr>
+                        <td class="sticky left-0 z-10 border-b border-line bg-paper px-3 py-2">
+                            {{ $row['name'] }}
+                        </td>
+                        @foreach ($report->periods as $period)
+                            <td class="border-b border-line px-3 py-2 text-right">
+                                <x-money :value="$row['values'][$period]" />
+                            </td>
+                        @endforeach
+                    </tr>
+                @endforeach
+
+                <tr class="font-semibold">
+                    <td class="sticky left-0 z-10 border-y border-line bg-paper px-3 py-2">Total Income</td>
+                    @foreach ($report->periods as $period)
+                        <td class="border-y border-line px-3 py-2 text-right">
+                            <x-money :value="$report->incomeTotalFor($period)" />
+                        </td>
+                    @endforeach
+                </tr>
+
+                @foreach ($report->expenseRows as $row)
+                    <tr>
+                        <td class="sticky left-0 z-10 border-b border-line bg-paper px-3 py-2">
+                            {{ $row['name'] }}
+                        </td>
+                        @foreach ($report->periods as $period)
+                            <td class="border-b border-line px-3 py-2 text-right">
+                                <x-money :value="$row['values'][$period]" />
+                            </td>
+                        @endforeach
+                    </tr>
+                @endforeach
+
+                <tr class="font-semibold">
+                    <td class="sticky left-0 z-10 border-y border-line bg-paper px-3 py-2">Total Expense</td>
+                    @foreach ($report->periods as $period)
+                        <td class="border-y border-line px-3 py-2 text-right">
+                            <x-money :value="$report->expenseTotalFor($period)" />
+                        </td>
+                    @endforeach
+                </tr>
+
+                <tr class="font-bold">
+                    <td class="sticky left-0 z-10 border-t border-line bg-paper px-3 py-3 text-base">Net Income</td>
+                    @foreach ($report->periods as $period)
+                        <td class="border-t border-line px-3 py-3 text-right text-base">
+                            <x-money :value="$report->netFor($period)" />
+                        </td>
+                    @endforeach
+                </tr>
+            </tbody>
+        </table>
     </div>
+
+    <dl class="mt-8 flex flex-wrap gap-x-10 gap-y-4 border-t border-line pt-4">
+        <div>
+            <dt class="text-sm text-muted">Total income</dt>
+            <dd class="mt-1 text-lg font-semibold"><x-money :value="$report->totalIncome" /></dd>
+        </div>
+
+        <div>
+            <dt class="text-sm text-muted">Total expense</dt>
+            <dd class="mt-1 text-lg font-semibold"><x-money :value="$report->totalExpense" /></dd>
+        </div>
+
+        <div>
+            <dt class="text-sm text-muted">Net income</dt>
+            <dd class="mt-1 text-xl font-bold"><x-money :value="$report->net" /></dd>
+        </div>
+    </dl>
 </x-app-layout>

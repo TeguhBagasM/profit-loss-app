@@ -7,30 +7,107 @@
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
-        <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
-            @include('layouts.navigation')
+    <body class="min-h-screen bg-paper font-sans text-ink antialiased">
+        @php
+            $navigation = [
+                ['label' => 'Dashboard', 'href' => route('dashboard'), 'active' => request()->routeIs('dashboard')],
+                ['label' => 'Transaksi', 'href' => route('transactions.index'), 'active' => request()->routeIs('transactions.*')],
+                ['label' => 'COA', 'href' => route('chart-of-accounts.index'), 'active' => request()->routeIs('chart-of-accounts.*')],
+                ['label' => 'Kategori', 'href' => route('categories.index'), 'active' => request()->routeIs('categories.*')],
+                ['label' => 'Laporan', 'href' => route('reports.profit-loss'), 'active' => request()->routeIs('reports.*')],
+            ];
+        @endphp
 
-            <!-- Page Heading -->
-            @isset($header)
-                <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
+        <div class="lg:flex lg:min-h-screen">
+            <aside class="hidden lg:flex lg:w-56 lg:shrink-0 lg:flex-col lg:border-r lg:border-line lg:bg-surface">
+                <div class="px-5 py-6">
+                    <a href="{{ route('dashboard') }}" class="text-base font-semibold tracking-tight text-ink">
+                        {{ config('app.name', 'Laravel') }}
+                    </a>
+                </div>
+
+                <nav class="flex-1 space-y-0.5 px-2" aria-label="Navigasi utama">
+                    @foreach ($navigation as $item)
+                        <a href="{{ $item['href'] }}"
+                           @class([
+                               'block rounded-md px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-accent',
+                               'bg-paper font-medium text-ink' => $item['active'],
+                               'text-muted hover:text-ink' => ! $item['active'],
+                           ])
+                           @if ($item['active']) aria-current="page" @endif>
+                            {{ $item['label'] }}
+                        </a>
+                    @endforeach
+                </nav>
+
+                <div class="border-t border-line px-5 py-4">
+                    <p class="truncate text-sm text-muted">{{ Auth::user()->email }}</p>
+
+                    <form method="POST" action="{{ route('logout') }}" class="mt-2">
+                        @csrf
+                        <button type="submit" class="text-sm text-muted underline hover:text-ink">
+                            Keluar
+                        </button>
+                    </form>
+                </div>
+            </aside>
+
+            <div class="min-w-0 flex-1">
+                <header class="border-b border-line bg-surface lg:hidden" x-data="{ open: false }">
+                    <div class="flex items-center justify-between px-4 py-3">
+                        <a href="{{ route('dashboard') }}" class="text-base font-semibold tracking-tight text-ink">
+                            {{ config('app.name', 'Laravel') }}
+                        </a>
+
+                        <button type="button" x-on:click="open = ! open" :aria-expanded="open.toString()"
+                                aria-controls="navigasi-mobile" aria-label="Buka menu"
+                                class="rounded-md border border-line p-2 text-muted hover:text-ink">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                 stroke-width="1.5" aria-hidden="true">
+                                <path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16" />
+                            </svg>
+                        </button>
                     </div>
-                </header>
-            @endisset
 
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
+                    <nav id="navigasi-mobile" x-show="open" x-cloak class="border-t border-line px-4 py-3"
+                         aria-label="Navigasi utama">
+                        <div class="space-y-0.5">
+                            @foreach ($navigation as $item)
+                                <a href="{{ $item['href'] }}"
+                                   @class([
+                                       'block rounded-md px-3 py-2 text-sm',
+                                       'bg-paper font-medium text-ink' => $item['active'],
+                                       'text-muted hover:text-ink' => ! $item['active'],
+                                   ])
+                                   @if ($item['active']) aria-current="page" @endif>
+                                    {{ $item['label'] }}
+                                </a>
+                            @endforeach
+                        </div>
+
+                        <div class="mt-3 border-t border-line pt-3">
+                            <p class="truncate text-sm text-muted">{{ Auth::user()->email }}</p>
+
+                            <form method="POST" action="{{ route('logout') }}" class="mt-2">
+                                @csrf
+                                <button type="submit" class="text-sm text-muted underline hover:text-ink">Keluar</button>
+                            </form>
+                        </div>
+                    </nav>
+                </header>
+
+                <main class="px-4 py-8 sm:px-6 lg:px-10">
+                    <div class="mx-auto w-full max-w-[1100px]">
+                        @isset($header)
+                            <div class="mb-6">{{ $header }}</div>
+                        @endisset
+
+                        {{ $slot }}
+                    </div>
+                </main>
+            </div>
         </div>
     </body>
 </html>

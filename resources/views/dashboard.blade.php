@@ -1,17 +1,18 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
+        <h1 class="text-xl font-semibold tracking-tight">Dashboard</h1>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    {{ __("You're logged in!") }}
-                </div>
-            </div>
-        </div>
-    </div>
+    <p class="text-sm text-muted">
+        Selamat datang, {{ Auth::user()->name }}. Pilih bagian di samping untuk mulai mencatat.
+    </p>
+
+    <ul class="mt-6 space-y-2 text-sm">
+        <li>
+            <a href="{{ route('transactions.index') }}" class="text-accent underline">Lihat transaksi</a>
+        </li>
+        <li>
+            <a href="{{ route('reports.profit-loss') }}" class="text-accent underline">Buka laporan profit/loss</a>
+        </li>
+    </ul>
 </x-app-layout>

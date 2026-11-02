@@ -1,105 +1,98 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Chart of Account
-        </h2>
+        <div class="flex flex-wrap items-end justify-between gap-3">
+            <div>
+                <h1 class="text-xl font-semibold tracking-tight">Chart of account</h1>
+                <p class="mt-1 text-sm text-muted">Daftar akun tempat transaksi dibukukan.</p>
+            </div>
+
+            <a href="{{ route('chart-of-accounts.create') }}"
+               class="inline-flex items-center rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
+                Tambah COA
+            </a>
+        </div>
     </x-slot>
 
-    <div class="py-8">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            @if (session('status'))
-                <div class="mb-4 p-3 bg-green-50 text-green-800 text-sm rounded">{{ session('status') }}</div>
-            @endif
+    <x-flash />
 
-            @if (session('error'))
-                <div class="mb-4 p-3 bg-red-50 text-red-800 text-sm rounded">{{ session('error') }}</div>
-            @endif
-
-            <form method="GET" action="{{ route('chart-of-accounts.index') }}"
-                  class="mb-4 flex flex-wrap items-end gap-3">
-                <div>
-                    <x-input-label for="search" value="Cari kode atau nama" />
-                    <x-text-input id="search" name="search" type="text" class="mt-1 block"
-                                  :value="$filters['search'] ?? ''" />
-                </div>
-
-                <div>
-                    <x-input-label for="category_id" value="Kategori" />
-                    <select id="category_id" name="category_id"
-                            class="mt-1 block border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                        <option value="">Semua kategori</option>
-                        @foreach ($categories as $category)
-                            <option value="{{ $category->id }}"
-                                @selected((string) ($filters['category_id'] ?? '') === (string) $category->id)>
-                                {{ $category->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <button type="submit" class="px-4 py-2 bg-gray-800 text-white text-sm rounded">
-                    Terapkan
-                </button>
-
-                <a href="{{ route('chart-of-accounts.create') }}"
-                   class="px-4 py-2 border border-gray-300 text-sm rounded">
-                    Tambah COA
-                </a>
-            </form>
-
-            @error('search')
-                <p class="mb-2 text-sm text-red-600">{{ $message }}</p>
-            @enderror
-            @error('category_id')
-                <p class="mb-2 text-sm text-red-600">{{ $message }}</p>
-            @enderror
-
-            <div class="bg-white shadow-sm sm:rounded-lg overflow-x-auto">
-                <table class="min-w-full text-sm">
-                    <thead>
-                        <tr class="border-b border-gray-200 text-left">
-                            <th class="px-4 py-2 font-medium">Kode</th>
-                            <th class="px-4 py-2 font-medium">Nama</th>
-                            <th class="px-4 py-2 font-medium">Kategori</th>
-                            <th class="px-4 py-2 font-medium text-right">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($chartOfAccounts as $chartOfAccount)
-                            <tr class="border-b border-gray-100">
-                                <td class="px-4 py-2 tabular-nums">{{ $chartOfAccount->code }}</td>
-                                <td class="px-4 py-2">{{ $chartOfAccount->name }}</td>
-                                <td class="px-4 py-2">{{ $chartOfAccount->category->name }}</td>
-                                <td class="px-4 py-2">
-                                    <div class="flex items-center justify-end gap-3">
-                                        <a href="{{ route('chart-of-accounts.edit', $chartOfAccount) }}" class="underline">
-                                            Ubah
-                                        </a>
-
-                                        <form method="POST"
-                                              action="{{ route('chart-of-accounts.destroy', $chartOfAccount) }}"
-                                              onsubmit="return confirm('Hapus COA ini?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="text-red-600 underline">Hapus</button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4" class="px-4 py-6 text-center text-gray-500">
-                                    Tidak ada COA yang cocok. Ubah kata kunci atau tambah COA baru.
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="mt-4">
-                {{ $chartOfAccounts->links() }}
-            </div>
+    <form method="GET" action="{{ route('chart-of-accounts.index') }}" class="flex flex-wrap items-end gap-3 border-b border-line pb-4">
+        <div>
+            <x-input-label for="search" value="Cari kode atau nama" />
+            <x-text-input id="search" name="search" type="text" class="mt-1 block w-auto" :value="$filters['search'] ?? ''" />
         </div>
+
+        <div>
+            <x-input-label for="category_id" value="Kategori" />
+            <select id="category_id" name="category_id" class="input-field w-auto">
+                <option value="">Semua kategori</option>
+                @foreach ($categories as $category)
+                    <option value="{{ $category->id }}"
+                        @selected((string) ($filters['category_id'] ?? '') === (string) $category->id)>
+                        {{ $category->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <button type="submit"
+                class="rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
+            Terapkan
+        </button>
+    </form>
+
+    @error('search')
+        <p class="mt-3 text-sm text-loss">{{ $message }}</p>
+    @enderror
+    @error('category_id')
+        <p class="mt-3 text-sm text-loss">{{ $message }}</p>
+    @enderror
+
+    <x-data-table class="mt-6">
+        <thead>
+            <tr>
+                <th>Kode</th>
+                <th>Nama</th>
+                <th>Kategori</th>
+                <th class="text-right">Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse ($chartOfAccounts as $chartOfAccount)
+                <tr>
+                    <td class="tabular-nums">{{ $chartOfAccount->code }}</td>
+                    <td>{{ $chartOfAccount->name }}</td>
+                    <td class="text-muted">{{ $chartOfAccount->category->name }}</td>
+                    <td>
+                        <div class="flex items-center justify-end gap-4">
+                            <a href="{{ route('chart-of-accounts.edit', $chartOfAccount) }}" class="text-sm text-accent underline">
+                                Ubah
+                            </a>
+
+                            <x-confirm-delete
+                                :action="route('chart-of-accounts.destroy', $chartOfAccount)"
+                                title="Hapus COA ini?"
+                                description="COA yang sudah punya transaksi tidak bisa dihapus. Hapus atau pindahkan transaksinya dulu."
+                                confirm-label="Hapus COA"
+                            />
+                        </div>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="4">
+                        <x-empty-state
+                            title="Tidak ada COA yang cocok"
+                            description="Ubah kata kunci pencarian, atau tambahkan COA baru untuk kategori ini."
+                            action-label="Tambah COA"
+                            :action-href="route('chart-of-accounts.create')"
+                        />
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </x-data-table>
+
+    <div class="mt-4">
+        {{ $chartOfAccounts->links() }}
     </div>
 </x-app-layout>
