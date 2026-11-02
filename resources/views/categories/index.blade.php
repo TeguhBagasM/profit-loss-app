@@ -34,6 +34,7 @@
                     <td>
                         <div class="flex items-center justify-end gap-4">
                             <a href="{{ route('categories.edit', $category) }}" class="text-sm text-accent underline">
+                                <i class="fa-solid fa-pen-to-square w-3.5 text-center" aria-hidden="true"></i>
                                 Ubah
                             </a>
 

@@ -59,7 +59,7 @@ $maxWidth = [
 
     <div
         x-show="show"
-        class="mb-6 bg-surface shadow-xl sm:mx-auto sm:w-full {{ $maxWidth }}"
+        class="relative z-10 mb-6 bg-surface shadow-xl sm:mx-auto sm:w-full {{ $maxWidth }}"
     >
         {{ $slot }}
     </div>
