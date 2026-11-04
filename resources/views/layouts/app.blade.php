@@ -9,7 +9,7 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="min-h-screen bg-paper font-sans text-ink antialiased">
+    <body class="min-h-screen overflow-x-hidden bg-paper font-sans text-ink antialiased">
         @php
             $navigation = [
                 ['label' => 'Dashboard', 'icon' => 'fa-solid fa-gauge-high', 'href' => route('dashboard'), 'active' => request()->routeIs('dashboard')],
@@ -20,8 +20,8 @@
             ];
         @endphp
 
-        <div class="lg:flex lg:min-h-screen">
-            <aside class="hidden lg:flex lg:w-56 lg:shrink-0 lg:flex-col lg:border-r lg:border-line lg:bg-surface">
+        <div class="md:flex md:min-h-screen">
+            <aside class="hidden md:flex md:w-56 md:shrink-0 md:flex-col md:border-r md:border-line md:bg-surface">
                 <div class="px-5 py-6">
                     <a href="{{ route('dashboard') }}" class="text-base font-semibold tracking-tight text-ink">
                         {{ config('app.name', 'Laravel') }}
@@ -56,7 +56,7 @@
             </aside>
 
             <div class="min-w-0 flex-1">
-                <header class="border-b border-line bg-surface lg:hidden" x-data="{ open: false }">
+                <header class="border-b border-line bg-surface md:hidden" x-data="{ open: false }">
                     <div class="flex items-center justify-between px-4 py-3">
                         <a href="{{ route('dashboard') }}" class="text-base font-semibold tracking-tight text-ink">
                             {{ config('app.name', 'Laravel') }}
@@ -97,7 +97,7 @@
                     </nav>
                 </header>
 
-                <main class="px-4 py-8 sm:px-6 lg:px-10">
+                <main class="px-4 py-6 sm:px-6 sm:py-8 lg:px-10">
                     <div class="mx-auto w-full max-w-[1100px]">
                         @isset($header)
                             <div class="mb-6">{{ $header }}</div>

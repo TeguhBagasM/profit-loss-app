@@ -7,7 +7,7 @@
             </div>
 
             <a href="{{ route('categories.create') }}"
-               class="inline-flex items-center gap-2 rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
+               class="inline-flex min-h-10 items-center gap-2 rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
                 <i class="fa-solid fa-plus w-3.5 text-center" aria-hidden="true"></i>
                 Tambah kategori
             </a>
@@ -20,8 +20,8 @@
         <thead>
             <tr>
                 <th>Nama</th>
-                <th>Tipe</th>
-                <th class="text-right">Jumlah COA</th>
+                <th class="hidden sm:table-cell">Tipe</th>
+                <th class="hidden sm:table-cell text-right">Jumlah COA</th>
                 <th class="text-right">Aksi</th>
             </tr>
         </thead>
@@ -29,11 +29,11 @@
             @forelse ($categories as $category)
                 <tr>
                     <td>{{ $category->name }}</td>
-                    <td class="text-muted">{{ $category->type }}</td>
-                    <td class="text-right tabular-nums">{{ $category->chart_of_accounts_count }}</td>
+                    <td class="hidden sm:table-cell text-muted">{{ $category->type }}</td>
+                    <td class="hidden sm:table-cell text-right tabular-nums">{{ $category->chart_of_accounts_count }}</td>
                     <td>
-                        <div class="flex items-center justify-end gap-4">
-                            <a href="{{ route('categories.edit', $category) }}" class="text-sm text-accent underline">
+                        <div class="flex flex-wrap items-center justify-end gap-2">
+                            <a href="{{ route('categories.edit', $category) }}" class="inline-flex min-h-10 items-center text-sm text-accent underline">
                                 <i class="fa-solid fa-pen-to-square w-3.5 text-center" aria-hidden="true"></i>
                                 Ubah
                             </a>

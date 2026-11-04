@@ -4,7 +4,7 @@
     </x-slot>
 
     <form method="POST" action="{{ route('transactions.store') }}"
-          class="max-w-xl space-y-5 border border-line bg-surface p-6">
+          class="w-full max-w-xl space-y-5 border border-line bg-surface p-4 sm:p-6">
         @csrf
 
         <div>
@@ -34,7 +34,7 @@
             <x-input-error :messages="$errors->get('description')" class="mt-2" />
         </div>
 
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
                 <x-input-label for="debit" value="Debit (pengeluaran)" />
                 <x-money-input name="debit" id="debit" :value="old('debit')" class="mt-1 block w-full" />
@@ -52,7 +52,7 @@
             Isi salah satu saja: debit untuk pengeluaran, credit untuk pemasukan.
         </p>
 
-        <div class="flex items-center gap-4 pt-1">
+        <div class="flex flex-col items-stretch gap-3 pt-1 sm:flex-row sm:items-center">
             <x-primary-button>
                 <i class="fa-solid fa-floppy-disk w-3.5 text-center" aria-hidden="true"></i>
                 Simpan transaksi

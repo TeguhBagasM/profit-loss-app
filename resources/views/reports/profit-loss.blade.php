@@ -9,7 +9,7 @@
             </div>
 
             <a href="{{ route('reports.profit-loss.export', ['from' => $from, 'to' => $to]) }}"
-               class="inline-flex items-center gap-2 rounded-md border border-line bg-surface px-4 py-2 text-sm font-medium text-ink hover:bg-paper focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
+               class="inline-flex min-h-10 items-center gap-2 rounded-md border border-line bg-surface px-4 py-2 text-sm font-medium text-ink hover:bg-paper focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
                 <i class="fa-solid fa-file-excel w-3.5 text-center" aria-hidden="true"></i>
                 Export Excel
             </a>
@@ -17,19 +17,19 @@
     </x-slot>
 
     <form method="GET" action="{{ route('reports.profit-loss') }}"
-          class="flex flex-wrap items-end gap-3 border-b border-line pb-4">
-        <div>
+          class="flex flex-col items-stretch gap-3 border-b border-line pb-4 sm:flex-row sm:flex-wrap sm:items-end">
+        <div class="w-full sm:w-auto sm:min-w-48">
             <label for="from" class="block text-sm font-medium text-muted">Dari bulan</label>
-            <input id="from" name="from" type="month" value="{{ $from }}" class="input-field w-auto">
+            <input id="from" name="from" type="month" value="{{ $from }}" class="input-field">
         </div>
 
-        <div>
+        <div class="w-full sm:w-auto sm:min-w-48">
             <label for="to" class="block text-sm font-medium text-muted">Sampai bulan</label>
-            <input id="to" name="to" type="month" value="{{ $to }}" class="input-field w-auto">
+            <input id="to" name="to" type="month" value="{{ $to }}" class="input-field">
         </div>
 
         <button type="submit"
-                class="rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
+                class="min-h-10 rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
             Tampilkan
         </button>
     </form>
@@ -41,8 +41,8 @@
         <p class="mt-3 text-sm text-loss">{{ $message }}</p>
     @enderror
 
-    <div class="mt-6 overflow-x-auto">
-        <table class="min-w-full border-collapse text-sm">
+    <div class="mt-6 max-w-full overflow-x-auto">
+        <table class="min-w-[700px] border-collapse text-sm">
             <thead>
                 <tr>
                     <th class="sticky left-0 z-10 border-b border-line bg-paper px-3 py-2 text-left text-sm font-medium text-muted">
@@ -62,17 +62,17 @@
                             {{ $row['name'] }}
                         </td>
                         @foreach ($report->periods as $period)
-                            <td class="border-b border-line px-3 py-2 text-right">
+                            <td class="border-b border-line px-3 py-2 text-right tabular-nums whitespace-nowrap">
                                 <x-money :value="$row['values'][$period]" />
                             </td>
                         @endforeach
                     </tr>
                 @endforeach
 
-                <tr class="font-semibold">
+                <tr class="bg-accent/5 font-semibold">
                     <td class="sticky left-0 z-10 border-y border-line bg-paper px-3 py-2">Total Income</td>
                     @foreach ($report->periods as $period)
-                        <td class="border-y border-line px-3 py-2 text-right">
+                        <td class="border-y border-line px-3 py-2 text-right tabular-nums whitespace-nowrap">
                             <x-money :value="$report->incomeTotalFor($period)" />
                         </td>
                     @endforeach
@@ -84,26 +84,26 @@
                             {{ $row['name'] }}
                         </td>
                         @foreach ($report->periods as $period)
-                            <td class="border-b border-line px-3 py-2 text-right">
+                            <td class="border-b border-line px-3 py-2 text-right tabular-nums whitespace-nowrap">
                                 <x-money :value="$row['values'][$period]" />
                             </td>
                         @endforeach
                     </tr>
                 @endforeach
 
-                <tr class="font-semibold">
+                <tr class="bg-loss/5 font-semibold">
                     <td class="sticky left-0 z-10 border-y border-line bg-paper px-3 py-2">Total Expense</td>
                     @foreach ($report->periods as $period)
-                        <td class="border-y border-line px-3 py-2 text-right">
+                        <td class="border-y border-line px-3 py-2 text-right tabular-nums whitespace-nowrap">
                             <x-money :value="$report->expenseTotalFor($period)" />
                         </td>
                     @endforeach
                 </tr>
 
-                <tr class="font-bold">
+                <tr class="bg-accent/10 font-bold">
                     <td class="sticky left-0 z-10 border-t border-line bg-paper px-3 py-3 text-base">Net Income</td>
                     @foreach ($report->periods as $period)
-                        <td class="border-t border-line px-3 py-3 text-right text-base">
+                        <td class="border-t border-line px-3 py-3 text-right text-base tabular-nums whitespace-nowrap">
                             <x-money :value="$report->netFor($period)" />
                         </td>
                     @endforeach

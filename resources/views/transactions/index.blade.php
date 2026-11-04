@@ -7,7 +7,7 @@
             </div>
 
             <a href="{{ route('transactions.create') }}"
-               class="inline-flex items-center gap-2 rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
+               class="inline-flex min-h-10 items-center gap-2 rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
                 <i class="fa-solid fa-plus w-3.5 text-center" aria-hidden="true"></i>
                 Tambah transaksi
             </a>
@@ -16,20 +16,20 @@
 
     <x-flash />
 
-    <form method="GET" action="{{ route('transactions.index') }}" class="flex flex-wrap items-end gap-3 border-b border-line pb-4">
-        <div>
+    <form method="GET" action="{{ route('transactions.index') }}" class="flex flex-col items-stretch gap-3 border-b border-line pb-4 sm:flex-row sm:flex-wrap sm:items-end">
+        <div class="w-full sm:w-auto">
             <x-input-label for="date_from" value="Dari tanggal" />
-            <input id="date_from" name="date_from" type="date" value="{{ $filters['date_from'] ?? '' }}" class="input-field w-auto">
+            <input id="date_from" name="date_from" type="date" value="{{ $filters['date_from'] ?? '' }}" class="input-field">
         </div>
 
-        <div>
+        <div class="w-full sm:w-auto">
             <x-input-label for="date_to" value="Sampai tanggal" />
-            <input id="date_to" name="date_to" type="date" value="{{ $filters['date_to'] ?? '' }}" class="input-field w-auto">
+            <input id="date_to" name="date_to" type="date" value="{{ $filters['date_to'] ?? '' }}" class="input-field">
         </div>
 
-        <div>
+        <div class="w-full sm:w-auto sm:min-w-56">
             <x-input-label for="chart_of_account_id" value="COA" />
-            <select id="chart_of_account_id" name="chart_of_account_id" class="input-field w-auto">
+            <select id="chart_of_account_id" name="chart_of_account_id" class="input-field">
                 <option value="">Semua COA</option>
                 @foreach ($chartOfAccounts as $coa)
                     <option value="{{ $coa->id }}"
@@ -40,9 +40,9 @@
             </select>
         </div>
 
-        <div>
+        <div class="w-full sm:w-auto sm:min-w-48">
             <x-input-label for="category_id" value="Kategori" />
-            <select id="category_id" name="category_id" class="input-field w-auto">
+            <select id="category_id" name="category_id" class="input-field">
                 <option value="">Semua kategori</option>
                 @foreach ($categories as $category)
                     <option value="{{ $category->id }}"
@@ -53,13 +53,13 @@
             </select>
         </div>
 
-        <div>
+        <div class="w-full sm:w-auto sm:min-w-56">
             <x-input-label for="search" value="Cari deskripsi" />
-            <x-text-input id="search" name="search" type="text" class="mt-1 block w-auto" :value="$filters['search'] ?? ''" />
+            <x-text-input id="search" name="search" type="text" class="mt-1 block w-full" :value="$filters['search'] ?? ''" />
         </div>
 
         <button type="submit"
-                class="rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
+                class="min-h-10 rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
             Terapkan
         </button>
     </form>
@@ -74,9 +74,9 @@
         <thead>
             <tr>
                 <th>Tanggal</th>
-                <th>Deskripsi</th>
+                <th class="hidden sm:table-cell">Deskripsi</th>
                 <th>COA</th>
-                <th>Kategori</th>
+                <th class="hidden lg:table-cell">Kategori</th>
                 <th class="text-right">Debit</th>
                 <th class="text-right">Credit</th>
                 <th class="text-right">Aksi</th>
@@ -86,14 +86,14 @@
             @forelse ($transactions as $transaction)
                 <tr>
                     <td class="tabular-nums whitespace-nowrap">{{ $transaction->date->format('Y-m-d') }}</td>
-                    <td>{{ $transaction->description }}</td>
+                    <td class="hidden sm:table-cell max-w-xs truncate">{{ $transaction->description }}</td>
                     <td>{{ $transaction->chartOfAccount->code }} - {{ $transaction->chartOfAccount->name }}</td>
-                    <td class="text-muted">{{ $transaction->chartOfAccount->category->name }}</td>
-                    <td class="text-right"><x-money :value="$transaction->debit" /></td>
-                    <td class="text-right"><x-money :value="$transaction->credit" /></td>
+                    <td class="hidden lg:table-cell text-muted">{{ $transaction->chartOfAccount->category->name }}</td>
+                    <td class="text-right whitespace-nowrap tabular-nums"><x-money :value="$transaction->debit" /></td>
+                    <td class="text-right whitespace-nowrap tabular-nums"><x-money :value="$transaction->credit" /></td>
                     <td>
-                        <div class="flex items-center justify-end gap-4">
-                            <a href="{{ route('transactions.edit', $transaction) }}" class="text-sm text-accent underline">
+                        <div class="flex flex-wrap items-center justify-end gap-2">
+                            <a href="{{ route('transactions.edit', $transaction) }}" class="inline-flex min-h-10 items-center text-sm text-accent underline">
                                 <i class="fa-solid fa-pen-to-square w-3.5 text-center" aria-hidden="true"></i>
                                 Ubah
                             </a>
@@ -123,7 +123,7 @@
         </tbody>
     </x-data-table>
 
-    <div class="mt-4">
+    <div class="mt-4 max-w-full overflow-x-auto">
         {{ $transactions->links() }}
     </div>
 </x-app-layout>

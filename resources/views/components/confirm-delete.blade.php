@@ -12,7 +12,7 @@
 @endphp
 
 <button type="button" x-data x-on:click="$dispatch('open-modal', '{{ $modalName }}')"
-        class="inline-flex items-center gap-1.5 text-sm text-loss underline hover:text-loss/80">
+        class="inline-flex min-h-10 items-center gap-1.5 text-sm text-loss underline hover:text-loss/80">
     <i class="fa-solid fa-trash w-3.5 text-center" aria-hidden="true"></i>
     {{ $label }}
 </button>

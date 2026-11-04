@@ -7,7 +7,7 @@
             </div>
 
             <a href="{{ route('chart-of-accounts.create') }}"
-               class="inline-flex items-center gap-2 rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
+               class="inline-flex min-h-10 items-center gap-2 rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
                 <i class="fa-solid fa-plus w-3.5 text-center" aria-hidden="true"></i>
                 Tambah COA
             </a>
@@ -16,15 +16,15 @@
 
     <x-flash />
 
-    <form method="GET" action="{{ route('chart-of-accounts.index') }}" class="flex flex-wrap items-end gap-3 border-b border-line pb-4">
-        <div>
+    <form method="GET" action="{{ route('chart-of-accounts.index') }}" class="flex flex-col items-stretch gap-3 border-b border-line pb-4 sm:flex-row sm:flex-wrap sm:items-end">
+        <div class="w-full sm:w-auto sm:min-w-64">
             <x-input-label for="search" value="Cari kode atau nama" />
-            <x-text-input id="search" name="search" type="text" class="mt-1 block w-auto" :value="$filters['search'] ?? ''" />
+            <x-text-input id="search" name="search" type="text" class="mt-1 block w-full" :value="$filters['search'] ?? ''" />
         </div>
 
-        <div>
+        <div class="w-full sm:w-auto sm:min-w-56">
             <x-input-label for="category_id" value="Kategori" />
-            <select id="category_id" name="category_id" class="input-field w-auto">
+            <select id="category_id" name="category_id" class="input-field">
                 <option value="">Semua kategori</option>
                 @foreach ($categories as $category)
                     <option value="{{ $category->id }}"
@@ -36,7 +36,7 @@
         </div>
 
         <button type="submit"
-                class="rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
+                class="min-h-10 rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
             Terapkan
         </button>
     </form>
@@ -53,7 +53,7 @@
             <tr>
                 <th>Kode</th>
                 <th>Nama</th>
-                <th>Kategori</th>
+                <th class="hidden sm:table-cell">Kategori</th>
                 <th class="text-right">Aksi</th>
             </tr>
         </thead>
@@ -62,10 +62,10 @@
                 <tr>
                     <td class="tabular-nums">{{ $chartOfAccount->code }}</td>
                     <td>{{ $chartOfAccount->name }}</td>
-                    <td class="text-muted">{{ $chartOfAccount->category->name }}</td>
+                    <td class="hidden sm:table-cell text-muted">{{ $chartOfAccount->category->name }}</td>
                     <td>
-                        <div class="flex items-center justify-end gap-4">
-                            <a href="{{ route('chart-of-accounts.edit', $chartOfAccount) }}" class="text-sm text-accent underline">
+                        <div class="flex flex-wrap items-center justify-end gap-2">
+                            <a href="{{ route('chart-of-accounts.edit', $chartOfAccount) }}" class="inline-flex min-h-10 items-center text-sm text-accent underline">
                                 <i class="fa-solid fa-pen-to-square w-3.5 text-center" aria-hidden="true"></i>
                                 Ubah
                             </a>
@@ -95,7 +95,7 @@
         </tbody>
     </x-data-table>
 
-    <div class="mt-4">
+    <div class="mt-4 max-w-full overflow-x-auto">
         {{ $chartOfAccounts->links() }}
     </div>
 </x-app-layout>

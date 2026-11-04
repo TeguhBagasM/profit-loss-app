@@ -4,14 +4,14 @@
     </x-slot>
 
     @if ($hasTransactions)
-        <div class="mb-4 max-w-xl border border-line border-l-2 border-l-loss bg-surface px-4 py-3 text-sm text-ink">
+        <div class="mb-4 w-full max-w-xl border border-line border-l-2 border-l-loss bg-surface px-4 py-3 text-sm text-ink">
             COA ini sudah punya transaksi. Memindah kategori berarti reklasifikasi: angka laporan
             historis ikut berpindah.
         </div>
     @endif
 
     <form method="POST" action="{{ route('chart-of-accounts.update', $chartOfAccount) }}"
-          class="max-w-xl space-y-5 border border-line bg-surface p-6">
+          class="w-full max-w-xl space-y-5 border border-line bg-surface p-4 sm:p-6">
         @csrf
         @method('PUT')
 
@@ -42,7 +42,7 @@
             <x-input-error :messages="$errors->get('category_id')" class="mt-2" />
         </div>
 
-        <div class="flex items-center gap-4 pt-1">
+        <div class="flex flex-col items-stretch gap-3 pt-1 sm:flex-row sm:items-center">
             <x-primary-button>
                 <i class="fa-solid fa-floppy-disk w-3.5 text-center" aria-hidden="true"></i>
                 Simpan perubahan

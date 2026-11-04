@@ -4,7 +4,7 @@
     </x-slot>
 
     <form method="POST" action="{{ route('categories.update', $category) }}"
-          class="max-w-xl space-y-5 border border-line bg-surface p-6">
+          class="w-full max-w-xl space-y-5 border border-line bg-surface p-4 sm:p-6">
         @csrf
         @method('PUT')
 
@@ -27,7 +27,7 @@
             </p>
         </div>
 
-        <div class="flex items-center gap-4 pt-1">
+        <div class="flex flex-col items-stretch gap-3 pt-1 sm:flex-row sm:items-center">
             <x-primary-button>
                 <i class="fa-solid fa-floppy-disk w-3.5 text-center" aria-hidden="true"></i>
                 Simpan perubahan
