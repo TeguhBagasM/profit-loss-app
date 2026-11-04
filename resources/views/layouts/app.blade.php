@@ -20,8 +20,8 @@
             ];
         @endphp
 
-        <div class="md:flex md:min-h-screen">
-            <aside class="hidden md:flex md:w-56 md:shrink-0 md:flex-col md:border-r md:border-line md:bg-surface">
+        <div class="md:min-h-screen">
+            <aside class="hidden md:fixed md:inset-y-0 md:left-0 md:z-40 md:flex md:h-screen md:w-56 md:flex-col md:overflow-y-auto md:border-r md:border-line md:bg-surface">
                 <div class="px-5 py-6">
                     <a href="{{ route('dashboard') }}" class="text-base font-semibold tracking-tight text-ink">
                         {{ config('app.name', 'Laravel') }}
@@ -55,7 +55,7 @@
                 </div>
             </aside>
 
-            <div class="min-w-0 flex-1">
+            <div class="min-w-0 md:ml-56">
                 <header class="border-b border-line bg-surface md:hidden" x-data="{ open: false }">
                     <div class="flex items-center justify-between px-4 py-3">
                         <a href="{{ route('dashboard') }}" class="text-base font-semibold tracking-tight text-ink">
