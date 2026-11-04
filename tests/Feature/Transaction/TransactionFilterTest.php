@@ -19,12 +19,12 @@ class TransactionFilterTest extends TestCase
         $this->actingAs(User::factory()->create());
         $account = $this->account();
 
-        $this->transaction($account, '2021-12-31', 'Akhir tahun lalu');
-        $this->transaction($account, '2022-01-01', 'Batas awal');
-        $this->transaction($account, '2022-01-15', 'Batas akhir');
-        $this->transaction($account, '2022-02-01', 'Di luar rentang');
+        $this->transaction($account, '2025-12-31', 'Akhir tahun lalu');
+        $this->transaction($account, '2026-01-01', 'Batas awal');
+        $this->transaction($account, '2026-01-15', 'Batas akhir');
+        $this->transaction($account, '2026-02-01', 'Di luar rentang');
 
-        $this->get(route('transactions.index', ['date_from' => '2022-01-01', 'date_to' => '2022-01-15']))
+        $this->get(route('transactions.index', ['date_from' => '2026-01-01', 'date_to' => '2026-01-15']))
             ->assertOk()
             ->assertSee('Batas awal')
             ->assertSee('Batas akhir')
@@ -39,8 +39,8 @@ class TransactionFilterTest extends TestCase
         $salary = $this->account();
         $transport = $this->account('602', 'Bensin', 'Transport Expense', Category::TYPE_EXPENSE);
 
-        $this->transaction($salary, '2022-01-01', 'Gaji Januari');
-        $this->transaction($transport, '2022-01-02', 'Bensin Anak');
+        $this->transaction($salary, '2026-01-01', 'Gaji Januari');
+        $this->transaction($transport, '2026-01-02', 'Bensin Anak');
 
         $this->get(route('transactions.index', ['chart_of_account_id' => $transport->id]))
             ->assertOk()
@@ -55,8 +55,8 @@ class TransactionFilterTest extends TestCase
         $salary = $this->account();
         $transport = $this->account('602', 'Bensin', 'Transport Expense', Category::TYPE_EXPENSE);
 
-        $this->transaction($salary, '2022-01-01', 'Gaji Januari');
-        $this->transaction($transport, '2022-01-02', 'Bensin Anak');
+        $this->transaction($salary, '2026-01-01', 'Gaji Januari');
+        $this->transaction($transport, '2026-01-02', 'Bensin Anak');
 
         $this->get(route('transactions.index', ['category_id' => $transport->category_id]))
             ->assertOk()
@@ -69,9 +69,9 @@ class TransactionFilterTest extends TestCase
         $this->actingAs(User::factory()->create());
         $account = $this->account();
 
-        $this->transaction($account, '2022-01-01', 'Diskon 50% Bulan Ini');
-        $this->transaction($account, '2022-01-02', 'Kode_A Promo');
-        $this->transaction($account, '2022-01-03', 'Gaji Januari');
+        $this->transaction($account, '2026-01-01', 'Diskon 50% Bulan Ini');
+        $this->transaction($account, '2026-01-02', 'Kode_A Promo');
+        $this->transaction($account, '2026-01-03', 'Gaji Januari');
 
         $this->get(route('transactions.index', ['search' => '%']))
             ->assertOk()
@@ -96,8 +96,8 @@ class TransactionFilterTest extends TestCase
         $this->actingAs(User::factory()->create());
         $account = $this->account();
 
-        $this->transaction($account, '2022-01-01', 'Lebih lama');
-        $newest = $this->transaction($account, '2022-03-01', 'Terbaru');
+        $this->transaction($account, '2026-01-01', 'Lebih lama');
+        $newest = $this->transaction($account, '2026-03-01', 'Terbaru');
 
         $response = $this->get(route('transactions.index'))->assertOk();
 
@@ -109,9 +109,9 @@ class TransactionFilterTest extends TestCase
         $this->actingAs(User::factory()->create());
         $account = $this->account();
 
-        $this->transaction($account, '2022-01-01', 'Kecil', debit: '10.00');
-        $this->transaction($account, '2022-01-02', 'Besar', debit: '500.00');
-        $biggest = $this->transaction($account, '2022-01-03', 'Paling besar', debit: '900.00');
+        $this->transaction($account, '2026-01-01', 'Kecil', debit: '10.00');
+        $this->transaction($account, '2026-01-02', 'Besar', debit: '500.00');
+        $biggest = $this->transaction($account, '2026-01-03', 'Paling besar', debit: '900.00');
 
         $response = $this->get(route('transactions.index', ['sort' => 'debit', 'direction' => 'desc']))
             ->assertOk();
@@ -124,8 +124,8 @@ class TransactionFilterTest extends TestCase
         $this->actingAs(User::factory()->create());
         $account = $this->account();
 
-        $this->transaction($account, '2022-01-01', 'Lebih lama');
-        $newest = $this->transaction($account, '2022-03-01', 'Terbaru');
+        $this->transaction($account, '2026-01-01', 'Lebih lama');
+        $newest = $this->transaction($account, '2026-03-01', 'Terbaru');
 
         $response = $this->get(route('transactions.index', ['sort' => 'password', 'direction' => 'desc']))
             ->assertOk();
@@ -140,7 +140,7 @@ class TransactionFilterTest extends TestCase
         $account = $this->account();
 
         foreach (range(1, 20) as $index) {
-            $this->transaction($account, '2022-01-01', 'Gaji '.$index);
+            $this->transaction($account, '2026-01-01', 'Gaji '.$index);
         }
 
         $response = $this->get(route('transactions.index', ['search' => 'Gaji']))->assertOk();
@@ -158,13 +158,13 @@ class TransactionFilterTest extends TestCase
         $account = $this->account();
 
         foreach (range(1, 3) as $index) {
-            $this->transaction($account, '2022-01-01', 'Transaksi '.$index);
+            $this->transaction($account, '2026-01-01', 'Transaksi '.$index);
         }
 
         $fewQueries = $this->countIndexQueries();
 
         foreach (range(4, 20) as $index) {
-            $this->transaction($account, '2022-01-01', 'Transaksi '.$index);
+            $this->transaction($account, '2026-01-01', 'Transaksi '.$index);
         }
 
         $manyQueries = $this->countIndexQueries();
@@ -181,7 +181,7 @@ class TransactionFilterTest extends TestCase
     {
         $this->actingAs(User::factory()->create());
 
-        $this->get(route('transactions.index', ['date_from' => '01/01/2022']))
+        $this->get(route('transactions.index', ['date_from' => '01/01/2026']))
             ->assertSessionHasErrors('date_from');
     }
 

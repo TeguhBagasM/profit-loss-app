@@ -36,22 +36,22 @@ class DemoReportSeederTest extends TestCase
             '13950000.00',
             '10600000.00',
         ], [
-            $report->netFor('2022-01'),
-            $report->netFor('2022-02'),
-            $report->netFor('2022-03'),
+            $report->netFor('2026-01'),
+            $report->netFor('2026-02'),
+            $report->netFor('2026-03'),
         ]);
 
-        $this->assertSame('12000000.00', $this->row($report->incomeRows, 'Salary')['values']['2022-01']);
-        $this->assertSame('5500000.00', $this->row($report->incomeRows, 'Other Income')['values']['2022-01']);
-        $this->assertSame('6000000.00', $this->row($report->incomeRows, 'Other Income')['values']['2022-02']);
-        $this->assertSame('3500000.00', $this->row($report->incomeRows, 'Other Income')['values']['2022-03']);
+        $this->assertSame('12000000.00', $this->row($report->incomeRows, 'Salary')['values']['2026-01']);
+        $this->assertSame('5500000.00', $this->row($report->incomeRows, 'Other Income')['values']['2026-01']);
+        $this->assertSame('6000000.00', $this->row($report->incomeRows, 'Other Income')['values']['2026-02']);
+        $this->assertSame('3500000.00', $this->row($report->incomeRows, 'Other Income')['values']['2026-03']);
 
-        $this->assertSame('500000.00', $this->row($report->expenseRows, 'Family Expense')['values']['2022-01']);
-        $this->assertSame('4500000.00', $this->row($report->expenseRows, 'Family Expense')['values']['2022-03']);
-        $this->assertSame('200000.00', $this->row($report->expenseRows, 'Transport Expense')['values']['2022-01']);
-        $this->assertSame('225000.00', $this->row($report->expenseRows, 'Transport Expense')['values']['2022-03']);
-        $this->assertSame('150000.00', $this->row($report->expenseRows, 'Meal Expense')['values']['2022-01']);
-        $this->assertSame('300000.00', $this->row($report->expenseRows, 'Meal Expense')['values']['2022-02']);
+        $this->assertSame('500000.00', $this->row($report->expenseRows, 'Family Expense')['values']['2026-01']);
+        $this->assertSame('4500000.00', $this->row($report->expenseRows, 'Family Expense')['values']['2026-03']);
+        $this->assertSame('200000.00', $this->row($report->expenseRows, 'Transport Expense')['values']['2026-01']);
+        $this->assertSame('225000.00', $this->row($report->expenseRows, 'Transport Expense')['values']['2026-03']);
+        $this->assertSame('150000.00', $this->row($report->expenseRows, 'Meal Expense')['values']['2026-01']);
+        $this->assertSame('300000.00', $this->row($report->expenseRows, 'Meal Expense')['values']['2026-02']);
     }
 
     public function test_demo_seeder_idempoten(): void
@@ -66,8 +66,8 @@ class DemoReportSeederTest extends TestCase
     private function report(): ProfitLossReport
     {
         return $this->app->make(ProfitLossReportService::class)->build(
-            CarbonImmutable::createFromFormat('!Y-m', '2022-01'),
-            CarbonImmutable::createFromFormat('!Y-m', '2022-03'),
+            CarbonImmutable::createFromFormat('!Y-m', '2026-01'),
+            CarbonImmutable::createFromFormat('!Y-m', '2026-03'),
         );
     }
 

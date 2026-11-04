@@ -15,21 +15,21 @@ class TransactionSeeder extends Seeder
         // Tanggal sumber berformat M/D/YYYY pada soal; seeder memakai ISO Y-m-d.
         $transactions = [
             [
-                'date' => '2022-01-01',
+                'date' => '2026-01-01',
                 'code' => '401',
                 'description' => 'Gaji Di Persuhaan A',
                 'debit' => '0.00',
                 'credit' => '5000000.00',
             ],
             [
-                'date' => '2022-01-02',
+                'date' => '2026-01-02',
                 'code' => '402',
                 'description' => 'Gaji Ketum',
                 'debit' => '0.00',
                 'credit' => '7000000.00',
             ],
             [
-                'date' => '2022-01-10',
+                'date' => '2026-01-10',
                 'code' => '602',
                 'description' => 'Bensin Anak',
                 'debit' => '25000.00',

@@ -17,9 +17,6 @@ class ProfitLossReportService
 {
     public const MAX_MONTHS = 24;
 
-    /**
-     * Bangun laporan untuk rentang bulan inklusif.
-     */
     public function build(CarbonImmutable $from, CarbonImmutable $to): ProfitLossReport
     {
         $from = $from->startOfMonth();
@@ -41,8 +38,6 @@ class ProfitLossReportService
         $incomeRows = [];
         $expenseRows = [];
 
-        // Baris disusun dari SEMUA kategori, bukan dari hasil query, sehingga
-        // kategori/bulan tanpa transaksi tetap tampil dengan nilai 0.00.
         $categories = Category::query()
             ->orderBy('id')
             ->get(['id', 'name', 'type']);
@@ -83,7 +78,6 @@ class ProfitLossReportService
     }
 
     /**
-     * Tentukan rentang bulan dari filter (format 'Y-m') dengan default bagian 6 spec.
      *
      * @return array{from: CarbonImmutable, to: CarbonImmutable}
      */
@@ -162,10 +156,6 @@ class ProfitLossReportService
     /**
      * Agregasi per kategori per bulan.
      *
-     * Baris pada rentang tanggal diambil lewat Query Builder dengan binding (filter
-     * memakai index `date`), lalu dijumlahkan di PHP memakai BCMath. Tidak ada
-     * DB::raw/selectRaw di sini, sesuai aturan bagian 8 spec.
-     *
      * @return array<int, array<string, array{debit: string, credit: string}>>
      */
     private function aggregate(CarbonImmutable $from, CarbonImmutable $to): array
@@ -202,9 +192,6 @@ class ProfitLossReportService
         return $sums;
     }
 
-    /**
-     * @param  list<array{id: int, name: string, values: array<string, string>}>  $rows
-     */
     private function sumRows(array $rows): string
     {
         $total = '0.00';
@@ -218,14 +205,6 @@ class ProfitLossReportService
         return $total;
     }
 
-    /**
-     * Normalisasi nilai kolom decimal dari driver menjadi string skala 2.
-     *
-     * MySQL/PostgreSQL mengembalikan decimal sebagai string. SQLite mengembalikan
-     * angka native (int, atau float bila ada pecahan); untuk kasus itu konversi
-     * dilakukan SEKALI di batas driver ke string 2 desimal, dan seluruh aritmetika
-     * setelahnya memakai BCMath.
-     */
     private function decimal(mixed $value): string
     {
         $normalized = match (true) {
